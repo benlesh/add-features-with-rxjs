@@ -11,7 +11,7 @@ import { } from 'rxjs/operators';
 export class LatestNewsComponent {
   subscription: Subscription;
 
-  refreshTimer$ = timer(0, 3000);
+  refreshTimer$ = timer(0, 30000);
 
   news$ = this.newsfeed.news$;
 
