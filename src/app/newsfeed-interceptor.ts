@@ -29,12 +29,15 @@ export function generateRandomDataItem() {
     author: faker.name.findName(),
     date: faker.date.recent(),
     title: capitalizeTitle(
-      faker.hacker.adjective() + ' ' + faker.hacker.noun() + ' ' + faker.hacker.ingverb() + ' ' + faker.hacker.noun()
+      faker.hacker.adjective() + 
+      ' ' + faker.hacker.noun() + 
+      ' ' + faker.hacker.ingverb() + 
+      ' ' + faker.hacker.noun()
     ),
     contentSample: faker.lorem.paragraph(3),
   };
 }
 
 function capitalizeTitle(str: string): string {
-  return str.replace(/\w\S*/g, (txt: string) => txt[0].toUpperCase() + txt.substr(1)
+  return str.replace(/\w\S*/g, (txt: string) => txt[0].toUpperCase() + txt.substr(1))
 }
