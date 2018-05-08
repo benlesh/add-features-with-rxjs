@@ -3,6 +3,7 @@ import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpResponse, Htt
 import { Response, RequestOptionsArgs, RequestOptions, Http, ConnectionBackend } from '@angular/http';
 import { Observable, of } from 'rxjs';
 import * as faker from 'faker';
+import { delay } from 'rxjs/operators';
 
 @Injectable()
 export class NewsFeedInterceptor implements HttpInterceptor {
@@ -13,7 +14,9 @@ export class NewsFeedInterceptor implements HttpInterceptor {
         body: generateRandomData(),
       });
 
-      return of(response);
+      return of(response).pipe(
+        delay(200)
+      );
     } else {
       return next.handle(request);
     }
