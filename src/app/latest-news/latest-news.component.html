@@ -1,0 +1,7 @@
+<h2>Latest News</h2>
+
+<article *ngFor="let news of (news$ | async)">
+  <h4>{{news.title}}</h4>
+  <time>{{news.date | date: 'medium'}}</time> by {{news.author}}
+  <p>{{news.contentSample}}</p>
+</article>
