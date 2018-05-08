@@ -15,7 +15,7 @@ export class NewsFeedInterceptor implements HttpInterceptor {
       });
 
       return of(response).pipe(
-        delay(200)
+        delay(1000)
       );
     } else {
       return next.handle(request);

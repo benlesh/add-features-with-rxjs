@@ -1,7 +1,8 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { of, fromEvent, concat, defer } from 'rxjs';
-import { map, exhaustMap, takeUntil, startWith, tap, takeWhile, repeat } from 'rxjs/operators';
+import { map, exhaustMap, takeUntil, startWith, tap, takeWhile, repeat, ignoreElements } from 'rxjs/operators';
 import { RxAnimationsService } from '../rx-animations.service';
+import { NewsFeedService } from '../news-feed.service';
 
 @Component({
   selector: 'touch-drag-to-refresh',
@@ -35,6 +36,11 @@ export class TouchDragToRefreshComponent implements OnInit {
       }
     }),
     takeWhile(y => y <= window.innerHeight / 2),
+    x => concat(x, 
+      this.newsfeed.loadNews$.pipe(
+        exhaustMap(() => this.rxAnimations.tween(this._pos, 0, 200))
+      )
+    ),
     repeat()
   );
 
@@ -49,7 +55,7 @@ export class TouchDragToRefreshComponent implements OnInit {
 
   transformRotate$ = of('rotate(0deg)');
 
-  constructor(private rxAnimations: RxAnimationsService) { }
+  constructor(private newsfeed: NewsFeedService, private rxAnimations: RxAnimationsService) { }
 
   ngOnInit() {
   }
