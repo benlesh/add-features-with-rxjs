@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { of, fromEvent } from 'rxjs';
-import { map, exhaustMap, takeUntil, startWith } from 'rxjs/operators';
+import { of, fromEvent, concat, defer } from 'rxjs';
+import { map, exhaustMap, takeUntil, startWith, tap } from 'rxjs/operators';
+import { RxAnimationsService } from '../rx-animations.service';
 
 @Component({
   selector: 'touch-drag-to-refresh',
@@ -8,17 +9,23 @@ import { map, exhaustMap, takeUntil, startWith } from 'rxjs/operators';
   styleUrls: ['./touch-drag-to-refresh.component.css']
 })
 export class TouchDragToRefreshComponent implements OnInit {
+  private _pos = 0;
+
   touchStart$ = fromEvent<TouchEvent>(document, 'touchstart');
   touchMove$ = fromEvent<TouchEvent>(document, 'touchmove');
-  touchEnd$ = fromEvent<TouchEvent>(document, 'touchEnd');
+  touchEnd$ = fromEvent<TouchEvent>(document, 'touchend');
 
   touchDrag$ = this.touchStart$.pipe(
     exhaustMap(start => {
-      return this.touchMove$.pipe(
-        map(move => move.touches[0].pageY - start.touches[0].pageY),
-        takeUntil(this.touchEnd$),
-      )
-    })
+      return concat(
+        this.touchMove$.pipe(
+          map(move => move.touches[0].pageY - start.touches[0].pageY),
+          takeUntil(this.touchEnd$),
+          tap(p => this._pos = p),
+        ),
+        defer(() => this.rxAnimations.tween(this._pos, 0, 200)),
+      );
+    }),
   );
 
   position$ = this.touchDrag$.pipe(
@@ -32,7 +39,7 @@ export class TouchDragToRefreshComponent implements OnInit {
 
   transformRotate$ = of('rotate(0deg)');
 
-  constructor() { }
+  constructor(private rxAnimations: RxAnimationsService) { }
 
   ngOnInit() {
   }
