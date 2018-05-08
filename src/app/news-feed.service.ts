@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, share, exhaustMap } from 'rxjs/operators';
-import { EMPTY, timer, BehaviorSubject } from 'rxjs';
+import { EMPTY, BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'

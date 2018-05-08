@@ -27,7 +27,7 @@ export class TouchDragToRefreshComponent implements OnInit {
           takeUntil(this.touchEnd$),
           tap(p => this._pos = p),
         ),
-        defer(() => this.rxAnimations.tween(this._pos, 0, 200)),
+        this.moveHome$,
       );
     }),
     tap(y => {
@@ -36,15 +36,22 @@ export class TouchDragToRefreshComponent implements OnInit {
       }
     }),
     takeWhile(y => y <= window.innerHeight / 2),
-    x => concat(x, 
-      this.newsfeed.loadNews$.pipe(
-        exhaustMap(() => this.rxAnimations.tween(this._pos, 0, 200))
-      )
-    ),
+  );
+
+  moveHome$ = defer(() => this.rxAnimations.tween(this._pos, 0, 200))
+
+  moveHomeAfterLoad$ = this.newsfeed.loadNews$.pipe(
+    exhaustMap(() => this.moveHome$)
+  );
+
+  positionUpdate$ = concat(
+    this.touchDrag$,
+    this.moveHomeAfterLoad$,
+  ).pipe(
     repeat()
   );
 
-  position$ = this.touchDrag$.pipe(
+  position$ = this.positionUpdate$.pipe(
     startWith(0),
     map(y => y - 70),
   );
@@ -57,7 +64,7 @@ export class TouchDragToRefreshComponent implements OnInit {
     exhaustMap(() => this.rxAnimations.tween(0, 360, 500).pipe(
       repeat(),
       takeUntil(this.newsfeed.loadNews$),
-      x => concat(x, of(x)),
+      x => concat(x, of(0)), // endWith(0)
     ))
   );
 
