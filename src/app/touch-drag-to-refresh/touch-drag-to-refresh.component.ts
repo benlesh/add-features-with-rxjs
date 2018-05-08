@@ -53,7 +53,17 @@ export class TouchDragToRefreshComponent implements OnInit {
     map(y => `translate3d(-35px, ${y}px, 0)`)
   );
 
-  transformRotate$ = of('rotate(0deg)');
+  rotate$ = this.newsfeed.refresh$.pipe(
+    exhaustMap(() => this.rxAnimations.tween(0, 360, 500).pipe(
+      repeat(),
+      takeUntil(this.newsfeed.loadNews$),
+      x => concat(x, of(x)),
+    ))
+  );
+
+  transformRotate$ = this.rotate$.pipe(
+    map(r => `rotate(${r}deg)`)
+  );
 
   constructor(private newsfeed: NewsFeedService, private rxAnimations: RxAnimationsService) { }
 

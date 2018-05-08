@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { timer, animationFrameScheduler, SchedulerLike, defer, concat, of } from 'rxjs';
+import { interval, animationFrameScheduler, SchedulerLike, defer, concat, of } from 'rxjs';
 import { map, takeWhile } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RxAnimationsService {
-  frames$ = timer(0, 0, animationFrameScheduler);
+  frames$ = interval(0, animationFrameScheduler);
 
   ticks$ = defer(() => {
     const start = animationFrameScheduler.now();
