@@ -1,0 +1,8 @@
+<div style="position: absolute; top: 0; left: 50%">
+  <div [style.transform]="transformPosition$ | async">
+    <svg width="70" height="70" [style.transform]="transformRotate$ | async">
+      <circle cy="35" cx="35" r="35" fill="lightgrey"></circle>
+      <circle cy="15" cx="35" r="10" fill="black"></circle>
+    </svg>
+  </div>
+</div>

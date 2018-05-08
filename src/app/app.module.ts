@@ -4,11 +4,13 @@ import { AppComponent } from './app.component';
 import { LatestNewsComponent } from './latest-news/latest-news.component';
 import { NewsFeedInterceptor } from './newsfeed-interceptor'
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { TouchDragToRefreshComponent } from './touch-drag-to-refresh/touch-drag-to-refresh.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    LatestNewsComponent
+    LatestNewsComponent,
+    TouchDragToRefreshComponent
   ],
   imports: [
     BrowserModule,
