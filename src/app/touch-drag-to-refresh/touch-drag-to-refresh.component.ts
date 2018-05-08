@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { of, fromEvent, concat, defer } from 'rxjs';
-import { map, exhaustMap, takeUntil, startWith, tap } from 'rxjs/operators';
+import { map, exhaustMap, takeUntil, startWith, tap, takeWhile, repeat } from 'rxjs/operators';
 import { RxAnimationsService } from '../rx-animations.service';
 
 @Component({
@@ -9,6 +9,9 @@ import { RxAnimationsService } from '../rx-animations.service';
   styleUrls: ['./touch-drag-to-refresh.component.css']
 })
 export class TouchDragToRefreshComponent implements OnInit {
+  @Output()
+  refresh = new EventEmitter<any>();
+
   private _pos = 0;
 
   touchStart$ = fromEvent<TouchEvent>(document, 'touchstart');
@@ -26,6 +29,13 @@ export class TouchDragToRefreshComponent implements OnInit {
         defer(() => this.rxAnimations.tween(this._pos, 0, 200)),
       );
     }),
+    tap(y => {
+      if (y > window.innerHeight / 2) {
+        this.refresh.emit();
+      }
+    }),
+    takeWhile(y => y <= window.innerHeight / 2),
+    repeat()
   );
 
   position$ = this.touchDrag$.pipe(
